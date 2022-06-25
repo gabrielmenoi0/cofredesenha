@@ -40,6 +40,10 @@ const String columntype = 'type';
 const String columnpasswordSocial = 'passwordSocial';
 const String columnObservationSocial = 'ob';
 
+const String tableSecurity = 'lock';
+const String columnIdSecurity = 'idSecurity';
+const String columnAuthSecurity = 'authSecurity';
+
 
 
 class DatabaseProvider {
@@ -101,6 +105,11 @@ class DatabaseProvider {
     $columnpasswordSocial text,
     $columntype text,
     $columnObservationSocial text 
+    )''');
+    await db.execute('''
+    create table $tableSecurity (
+    $columnIdSecurity text not null,
+    $columnAuthSecurity text not null
     )''');
 
   }
@@ -292,5 +301,28 @@ class DatabaseProvider {
         ? res.map((c) => SaveAccountModel.fromJson(c)).toList()
         : [];
     return list;
+  }
+    saveSecurity(String n) async {
+    final db = await database;
+    var res = await db.insert(tableSecurity, {
+      columnIdSecurity: "1",
+      columnAuthSecurity: n,
+    });
+    return res;
+  }
+
+  Future<int> deleteSecurity() async {
+    final db = await database;
+    var res = await db.delete(tableSecurity);
+    return res;
+  }
+
+  getSecurity() async {
+    List? resp;
+    final db = await database;
+    var res = await db.query(tableSecurity);
+    resp = res.isEmpty || res == null ? null : res.toList();
+    // res.isNotEmpty ? .toList() : []
+    return resp?.last.toString();
   }
 }

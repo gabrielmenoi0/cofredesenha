@@ -4,6 +4,7 @@ import 'package:cofredesenha/src/home/alterProfile.dart';
 import 'package:cofredesenha/src/home/passwordGenerator.dart';
 import 'package:cofredesenha/src/home/passwordGenerator2.dart';
 import 'package:cofredesenha/src/message.view.dart';
+import 'package:cofredesenha/src/security/securityView.dart';
 import 'package:cofredesenha/utils/button.dart';
 import 'package:cofredesenha/utils/images.dart';
 import 'package:cofredesenha/utils/screenUtils.dart';
@@ -130,7 +131,30 @@ class _ProfileViewState extends State<ProfileView> {
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordGenerator2())),
               ),
         ),
-
+        SizedBox(height: 10,),
+        Card(
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: DefaultColors.secondaryColor, width: 2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          color: Colors.white,
+          child: ListTile(
+            leading:Icon(Icons.settings,
+                color: DefaultColors.secondaryColor),
+            // trailing:  Icon(Icons.,
+            //     color: DefaultColors.secondaryColor),
+            // // subtitle: subTitle != null ? Text(subTitle) : null,
+            title: Text(
+              "Configurações",
+              style: DefaultStyle.textStyle(
+                  fontWeight: FontWeight.w400,
+                  size: 20,
+                  color: DefaultColors.darkColor2),
+            ),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SecurityView())),
+          ),
+        ),
         SizedBox(height: 10,),
         Card(
           shape: RoundedRectangleBorder(
@@ -374,7 +398,8 @@ class _ProfileViewState extends State<ProfileView> {
           });
         });
   }
-  _logout2(){
+  _logout2() async{
+    await _dbHelper.deleteSecurity();
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const MessageView()),
             (Route<dynamic> route) => false);
@@ -384,6 +409,7 @@ class _ProfileViewState extends State<ProfileView> {
     try{
       // await DeleteController().delete();
       var res = await _deleteUser();
+      await _dbHelper.deleteSecurity();
 
       if (res) {
 
